@@ -1,0 +1,79 @@
+from openai import OpenAI
+import os
+
+class NLPToolkitOpenAI:
+    def __init__(self, model="gpt-5.2"):
+        # OpenAI automatically reads OPENAI_API_KEY from environment
+        self.client = OpenAI()
+        self.model = model
+
+    def _ask_openai(self, system_prompt, user_text):
+        response = self.client.responses.create(
+            model=self.model,
+            input=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_text}
+            ]
+        )
+        return response.output_text.strip()
+
+    # 1. Named Entity Recognition
+    def ner(self, text):
+        system_prompt = (
+            "Extract named entities from the text. "
+            "Return JSON with keys: PERSON, ORG, LOCATION, DATE, OTHER."
+        )
+        return self._ask_openai(system_prompt, text)
+
+    # 2. Sentiment Analysis
+    def sentiment_analysis(self, text):
+        system_prompt = (
+            "Analyze sentiment. "
+            "Return exactly one word: Positive, Negative, or Neutral."
+        )
+        return self._ask_openai(system_prompt, text)
+
+    # 3. Abuse Detection
+    def abuse_detection(self, text):
+        system_prompt = (
+            "Check if the text is abusive or toxic. "
+            "Return only: Abusive or Not Abusive."
+        )
+        return self._ask_openai(system_prompt, text)
+
+    # 4. Emotion Detection
+    def emotion_detection(self, text):
+        system_prompt = (
+            "Detect the primary emotion. "
+            "Choose one: Joy, Sadness, Anger, Fear, Surprise, Love, Neutral."
+        )
+        return self._ask_openai(system_prompt, text)
+
+    # 5. Translation
+    def translate(self, text, target_language="English"):
+        system_prompt = (
+            f"Translate the text into {target_language}. "
+            "Return only the translated text."
+        )
+        return self._ask_openai(system_prompt, text)
+
+    # 6. Summarization
+    def summarize(self, text):
+        system_prompt = (
+            "Summarize the text in 2-3 concise sentences."
+        )
+        return self._ask_openai(system_prompt, text)
+
+    # 7. Intent Detection
+    def intent_detection(self, text):
+        system_prompt = (
+            "Identify intent. "
+            "Return a short label like: complaint, query, greeting, feedback."
+        )
+        return self._ask_openai(system_prompt, text)
+
+
+nlp = NLPToolkitOpenAI()
+
+text = "Elon Musk founded SpaceX in California in 2002."
+print(nlp.ner(text))

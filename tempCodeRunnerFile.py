@@ -1,0 +1,1 @@
+"Registeration Succesfull kindly login to proceed now."
